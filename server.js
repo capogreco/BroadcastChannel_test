@@ -16,7 +16,7 @@ channel.onmessage = e => {
 }
 
 function update_list () {
-  // console.log (`updating list!`)
+  console.log (`updating list!`)
   channel.postMessage (JSON.stringify (sockets, replacer))
 }
 
