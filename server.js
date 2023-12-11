@@ -14,7 +14,11 @@ channel.onmessage = e => {
   })
 }
 
-channel.postMessage (JSON.stringify (sockets, replacer))
+function update_list () {
+  channel.postMessage (JSON.stringify (sockets, replacer))
+}
+
+setInterval (update_list, 1000)
 
 
 // function to manage requests
