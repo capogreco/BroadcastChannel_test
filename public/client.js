@@ -1,4 +1,4 @@
-const ws_address = `ws://polite-gecko-95.deno.dev`
+const ws_address = `wss://polite-gecko-95.deno.dev`
 
 const socket = new WebSocket (ws_address)
 socket.onmessage = m => {
