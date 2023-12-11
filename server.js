@@ -4,16 +4,17 @@ import { generate } from "https://deno.land/std@0.208.0/uuid/v1.ts"
 
 const server_id = `s_${ generate () }`
 
-const servers = new Map ()
-servers.set (server_id, new Map ())
+const sockets = new Map ()
 
 const channel = new BroadcastChannel (`server_channel`)
 
 channel.onmessage = e => {
-  console.log (e)
+  sockets.forEach (s => {
+    s.send (JSON.stringify (e))
+  })
 }
 
-channel.postMessage (`hello, I guess?`)
+channel.postMessage (JSON.stringify (sockets, replacer))
 
 
 // function to manage requests
@@ -41,12 +42,7 @@ const req_handler = async incoming_req => {
       socket.onopen = () => {
          console.log (`socket opened!`)
 
-         socket.audio_enabled = false
-
-         servers.get(server_id).set (id, socket)
-         console.log (servers)
-
-         socket.send (JSON.stringify (servers, replacer))
+         sockets.set (id, socket)
       }
 
       // defining an onmessage method
@@ -55,7 +51,7 @@ const req_handler = async incoming_req => {
          // unwrap the message
          const msg = JSON.parse (m.data)
 
-         console.log (`message recieved:`, msg)
+        //  console.log (`message recieved:`, msg)
 
       }
 
@@ -104,4 +100,13 @@ function replacer (key, value) {
   } else {
     return value
   }
+}
+
+function reviver (key, value) {
+  if (typeof value === 'object' && value !== null) {
+    if (value.dataType === 'Map') {
+      return new Map (value.value)
+    }
+  }
+  return value
 }
