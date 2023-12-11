@@ -17,7 +17,7 @@ channel.onmessage = e => {
 
 function update_list () {
   console.log (`updating list!`)
-  channel.postMessage (JSON.stringify (sockets, replacer))
+  channel.postMessage (server_id)
 }
 
 setInterval (update_list, 1000)
