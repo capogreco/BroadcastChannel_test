@@ -9,9 +9,9 @@ const sockets = new Map ()
 const channel = new BroadcastChannel (`server_channel`)
 
 channel.onmessage = e => {
-  msg = JSON.parse (e.data, reviver)
+  const msg = JSON.parse (e.data, reviver)
   sockets.forEach (s => {
-    s.send (JSON.stringify (e))
+    s.send (JSON.stringify (msg))
   })
 }
 
