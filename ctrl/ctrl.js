@@ -12,7 +12,7 @@ function wait_for_clear () {
 }
 
 
-const ws_address = `wss://arp.deno.dev`
+const ws_address = `wss://polite-gecko-95.deno.dev`
 // const ws_address = `ws://localhost/`
 
 const socket = new WebSocket (ws_address)

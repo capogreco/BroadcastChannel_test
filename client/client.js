@@ -2,7 +2,7 @@
 
 let id = null
 
-const ws_address = `ws://170.64.187.168`
+const ws_address = `wss://polite-gecko-95.deno.dev`
 
 console.log (ws_address)
 
