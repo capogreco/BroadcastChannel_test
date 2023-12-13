@@ -1,7 +1,29 @@
 import { serve }    from "https://deno.land/std@0.185.0/http/server.ts"
 import { serveDir } from "https://deno.land/std@0.185.0/http/file_server.ts"
 import { generate } from "https://deno.land/std@0.185.0/uuid/v1.ts"
+import { uniqueNamesGenerator, adjectives, animals, colors, names } from "npm:unique-names-generator@4.2.0"
 
+
+function generate_nickname (type) {
+   const options = {
+      client: { 
+         dictionaries: [ names, adjectives ],
+         style: `capital`,
+         separator: ` the `,
+         length: 2 
+      },
+      server: {
+         dictionaries: [ colors, animals ],
+         style: `capital`,
+         separator: ` `,
+         length: 2
+      },
+   }
+   return uniqueNamesGenerator (options[ type ])   
+}
+
+const server_name = `The ` + generate_nickname (`server`)
+console.log (`this server is called ${ server_name }`)
 // map to manage sockets
 const sockets = new Map ()
 
@@ -103,6 +125,7 @@ const req_handler = async incoming_req => {
 
       // generate a unique ID
       const id = generate ()
+      const nickname = generate_nickname (`client`)
 
       // defining an onopen method
       socket.onopen = () => {
@@ -117,8 +140,8 @@ const req_handler = async incoming_req => {
          // bundle, stringify, & send ID
          // to the client via the socket 
          socket.send (JSON.stringify ({ 
-            'method' : `id`,
-            'content' :  id,
+            method : `id`,
+            content :  [ id, nickname, server_name ],
          }))
 
          // call update_control function

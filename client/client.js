@@ -1,28 +1,38 @@
 // ~ WEBSOCKET THINGS ~
 
 let id = null
+let nickname = null
+let server_name = null
 
+// const ws_address = `ws://localhost`
 const ws_address = `wss://polite-gecko-95.deno.dev`
 
-console.log (ws_address)
+console.log (`attempting websocket at ${ ws_address }`)
 
 // const ws_address = `ws://localhost/`
 
 const socket = new WebSocket (ws_address)
 
-// const state = {}
+socket.onopen = () => console.log (`websocket achieved!`)
 
 socket.onmessage = m => {
    const msg = JSON.parse (m.data)
-   console.dir (msg)
+
+   console.log (`${ msg.method } message recieved`)
+
    const handle_incoming = {
 
       id: () => {
-         id = msg.content
-         console.log (`identity is ${ id }`)
+         id = msg.content[0]
+         nickname = msg.content[1]
+         server_name = msg.content[2]
+         console.log (`id = ${ id }`)
+         console.log (` ... and they will refer to me as ${ nickname}`)
+         console.log (`service c/o ${ server_name }`)
+
          socket.send (JSON.stringify ({
             method: `greeting`,
-            content: `${ id } ~> hello!`
+            content: `${ nickname } has joined`
          }))
       },
 
@@ -45,8 +55,6 @@ socket.onmessage = m => {
             rev_gate.gain.setValueAtTime (rev_gate.gain.value, t)
             const r = ((1 - msg.state.y) ** 12) * 0.4
             rev_gate.gain.linearRampToValueAtTime (r, t + msg.content[1])
-
-            console.log (msg.state)
 
             play_osc (...msg.content, audio_context)
          }
