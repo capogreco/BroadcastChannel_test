@@ -35,18 +35,19 @@ function send_info () {
 }
 
 channel.onmessage = e => {
-   const msg = (e.data)
+   const msg = JSON.parse (e.data)
 
-   console.log (msg)
+   console.dir (msg)
 
-   // const manage = {
-   //    send_info,
-   //    info: () => {
-   //       console.log (JSON.msg.content)
-   //    }
-   // }
+   const manage = {
+      send_info,
+      info: () => {
+         if (!control) return
+         console.log (`${ JSON.msg.content } is connected to ${ server_name }`)
+      }
+   }
 
-   // manage[msg.method] ()
+   manage[msg.method] ()
 }
 
 // map to manage sockets
@@ -224,7 +225,7 @@ const req_handler = async incoming_req => {
                   // print success to console
                   console.log (`${ control.id } has control.`)
                   channel.postMessage (JSON.stringify ({
-                     method: `get_info`
+                     method: `send_info`
                   }))
                }
 
