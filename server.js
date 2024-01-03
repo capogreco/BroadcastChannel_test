@@ -27,7 +27,7 @@ console.log (`this server is called ${ server_name }`)
 const channel = new BroadcastChannel (`server_channel`)
 
 channel.onmessage = e => {
-   console.log (e.data)   
+   console.dir (e)   
 }
 
 // map to manage sockets
