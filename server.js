@@ -223,8 +223,9 @@ const req_handler = async incoming_req => {
 
                   // print success to console
                   console.log (`${ control.id } has control.`)
-                  channel.postMessage (`test_message`)
-                  console.log ()
+                  channel.postMessage (JSON.stringify ({
+                     method: `get_info`
+                  }))
                }
 
                // or print fail to console
