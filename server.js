@@ -3,7 +3,6 @@ import { serveDir } from "https://deno.land/std@0.185.0/http/file_server.ts"
 import { generate } from "https://deno.land/std@0.185.0/uuid/v1.ts"
 import { uniqueNamesGenerator, adjectives, animals, colors, names } from "npm:unique-names-generator@4.2.0"
 
-
 function generate_nickname (type) {
    const options = {
       client: { 
@@ -24,6 +23,13 @@ function generate_nickname (type) {
 
 const server_name = `The ` + generate_nickname (`server`)
 console.log (`this server is called ${ server_name }`)
+
+const channel = new BroadcastChannel (`server_channel`)
+
+channel.onmessage = e => {
+   console.log (e.data)   
+}
+
 // map to manage sockets
 const sockets = new Map ()
 
@@ -198,6 +204,8 @@ const req_handler = async incoming_req => {
 
                   // print success to console
                   console.log (`${ control.id } has control.`)
+                  channel.postMessage (`test_message`)
+                  console.log ()
                }
 
                // or print fail to console
