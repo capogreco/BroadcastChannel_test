@@ -35,18 +35,18 @@ function send_info () {
 }
 
 channel.onmessage = e => {
-   const msg = JSON.parse (e.data.content)
-   
-   console.dir (msg)
+   const msg = (e.data.content)
 
-   const manage = {
-      send_info,
-      info: () => {
-         console.log (JSON.msg.content)
-      }
-   }
+   console.log (msg)
 
-   manage[msg.method] ()
+   // const manage = {
+   //    send_info,
+   //    info: () => {
+   //       console.log (JSON.msg.content)
+   //    }
+   // }
+
+   // manage[msg.method] ()
 }
 
 // map to manage sockets
