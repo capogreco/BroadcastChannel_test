@@ -35,7 +35,9 @@ function send_info () {
 }
 
 channel.onmessage = e => {
-   const msg = e.data.content
+   const msg = JSON.parse (e.data.content)
+   
+   console.dir (msg)
 
    const manage = {
       send_info,
