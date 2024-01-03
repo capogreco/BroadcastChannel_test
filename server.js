@@ -26,8 +26,25 @@ console.log (`this server is called ${ server_name }`)
 
 const channel = new BroadcastChannel (`server_channel`)
 
+function send_info () {
+   const msg = {
+      method: `info`,
+      content: [ server_name, Array.from (sockets.entries ()) ],      
+   }   
+   channel.postMessage (JSON.stringify (msg))
+}
+
 channel.onmessage = e => {
-   console.dir (e)   
+   const msg = e.data
+
+   const manage = {
+      send_info,
+      info: () => {
+         console.log (JSON.msg.content)
+      }
+   }
+
+   manage[msg.method] ()
 }
 
 // map to manage sockets
