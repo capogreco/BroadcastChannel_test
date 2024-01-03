@@ -43,7 +43,7 @@ channel.onmessage = e => {
       send_info,
       info: () => {
          if (!control) return
-         console.log (`${ JSON.msg.content } is connected to ${ server_name }`)
+         console.log (`${ msg.content[0] } is connected to ${ server_name }`)
       }
    }
 
