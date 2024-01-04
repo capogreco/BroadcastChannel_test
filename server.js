@@ -1,27 +1,29 @@
 import { serve }    from "https://deno.land/std@0.185.0/http/server.ts"
 import { serveDir } from "https://deno.land/std@0.185.0/http/file_server.ts"
 import { generate } from "https://deno.land/std@0.185.0/uuid/v1.ts"
-import { uniqueNamesGenerator, adjectives, animals, colors, names } from "npm:unique-names-generator@4.2.0"
+// import { uniqueNamesGenerator, adjectives, animals, colors, names } from "npm:unique-names-generator@4.2.0"
+import { generate_nickname } from "./modules/nickname"
 
-function generate_nickname (type) {
-   const options = {
-      client: { 
-         dictionaries: [ names, adjectives ],
-         style: `capital`,
-         separator: ` the `,
-         length: 2 
-      },
-      server: {
-         dictionaries: [ colors, animals ],
-         style: `capital`,
-         separator: ` `,
-         length: 2
-      },
-   }
-   return uniqueNamesGenerator (options[ type ])   
-}
+// function generate_nickname (type) {
+//    const options = {
+//       client: { 
+//          dictionaries: [ names, adjectives ],
+//          style: `capital`,
+//          separator: ` the `,
+//          length: 2 
+//       },
+//       server: {
+//          dictionaries: [ colors, animals ],
+//          style: `capital`,
+//          separator: ` `,
+//          length: 2
+//       },
+//    }
 
-const server_name = `The ` + generate_nickname (`server`)
+//    return uniqueNamesGenerator (options[ type ])   
+// }
+
+const server_name = generate_nickname (`server`)
 console.log (`this server is called ${ server_name }`)
 
 const channel = new BroadcastChannel (`server_channel`)
