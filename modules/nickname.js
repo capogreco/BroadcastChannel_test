@@ -3,7 +3,7 @@ import { uniqueNamesGenerator, adjectives, animals, colors, names } from "npm:un
 export function generate_nickname (type) {
 
     const options = {
-       client: { 
+       synth: { 
           dictionaries: [ names, adjectives ],
           style: `capital`,
           separator: ` the `,
@@ -18,7 +18,7 @@ export function generate_nickname (type) {
     }
 
     const name = uniqueNamesGenerator (options[ type ])
-    
+
     return `${ type == `server` ? `The ` : `` }${ name }`
  }
  

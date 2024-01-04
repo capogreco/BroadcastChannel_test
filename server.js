@@ -1,51 +1,50 @@
 import { serve }    from "https://deno.land/std@0.185.0/http/server.ts"
 import { serveDir } from "https://deno.land/std@0.185.0/http/file_server.ts"
 import { generate } from "https://deno.land/std@0.185.0/uuid/v1.ts"
-// import { uniqueNamesGenerator, adjectives, animals, colors, names } from "npm:unique-names-generator@4.2.0"
 import { generate_nickname } from "./modules/nickname"
 
-// function generate_nickname (type) {
-//    const options = {
-//       client: { 
-//          dictionaries: [ names, adjectives ],
-//          style: `capital`,
-//          separator: ` the `,
-//          length: 2 
-//       },
-//       server: {
-//          dictionaries: [ colors, animals ],
-//          style: `capital`,
-//          separator: ` `,
-//          length: 2
-//       },
-//    }
-
-//    return uniqueNamesGenerator (options[ type ])   
-// }
-
 const server_name = generate_nickname (`server`)
+const server_id = generate ()
+
 console.log (`this server is called ${ server_name }`)
 
 const channel = new BroadcastChannel (`server_channel`)
+channel.postMessage (
+   JSON.stringify ({
+      method: `check_in`,
+      content: {
+         name: server_name,
+         id: server_id,
+      }
+   })
+)
 
 function send_info () {
    const msg = {
       method: `info`,
-      content: [ server_name, Array.from (sockets.entries ()) ],      
-   }   
+      content: {
+         name: server_name, 
+         sockets: Array.from (sockets.entries ())
+      }      
+   }
    channel.postMessage (JSON.stringify (msg))
 }
 
+
+
 channel.onmessage = e => {
    const msg = JSON.parse (e.data)
-
-   console.dir (msg)
 
    const manage = {
       send_info,
       info: () => {
          if (!control) return
-         console.log (`${ msg.content[0] } is connected to ${ server_name }`)
+         console.log (`${ msg.content.name } is connected to ${ server_name }`)
+      },
+      check_in: () => {
+         if (!control) return
+         console.log (`${ msg.content.name } checking in`)
+
       }
    }
 
@@ -58,79 +57,6 @@ const sockets = new Map ()
 let control    = false
 let is_playing = false
 
-// object to hold state
-const state = {
-   x: 1,
-   y: 0.5,
-   // is_playing: false,
-   is_playing: true,
-   // note_i: 0,
-   // sock_i: 0,
-}
-
-const major = [ 0, 4, 7 ]
-const minor = [ 0, 3, 7 ]
-const minor_inv_1 = [ 3, 7, 12 ]
-const major_inv_2 = [ 7, 12, 16 ]
-const minor_inv_3 = [ 10, 12, 15 ]
-
-// function transpose (a, t) {
-//    return a.map (e => e + t)
-// }
-
-const notes = [
-   major.map (e => e + 62),
-   minor_inv_1.map (e => e + 57),
-]
-
-let chord_i = 0
-let current_notes = notes[0]
-
-function change_chord () {
-   current_notes = notes[chord_i % 2]
-   chord_i++
-   setTimeout (change_chord, 6000)
-}
-
-change_chord ()
-
-function midi_to_cps (n) {
-   return 440 * (2 ** ((n - 69) / 12))
-}   
-
-const bpm = 120
-
-function play_note () {
-   const socks = [ ...sockets.values () ]
-   // if (socks.length > 0) state.sock_i %= socks.length
-   // else state.sock_i = 0
-   const note_i = Math.floor (Math.random () * current_notes.length)
-
-   // [ frq, lth, crv, bri, stk, gen, acx ]
-   // const frq = midi_to_cps (notes[state.note_i])
-   const frq = midi_to_cps (current_notes[note_i])
-   const lth = ((60 / bpm) / 32) * (4 ** (1 - state.y))
-   const crv = 1
-   const bri = state.x
-   const stk = 6
-   const gen = 1
-
-   const rand_i = Math.floor (Math.random () * socks.length)
-   if (socks[rand_i]) {
-      socks[rand_i].send (JSON.stringify ({ 
-         'method'  : `note`,
-         'content' :  [ frq, lth, crv, bri, stk, gen ],
-         'state'   : state,
-      }))         
-   }   
-
-   // state.sock_i++
-   // state.note_i++
-
-   if (state.is_playing) {
-      setTimeout (play_note, lth * 1000)
-   }
-}
 
 // function to manage requests
 const req_handler = async incoming_req => {
@@ -153,7 +79,7 @@ const req_handler = async incoming_req => {
 
       // generate a unique ID
       const id = generate ()
-      const nickname = generate_nickname (`client`)
+      const nickname = generate_nickname (`synth`)
 
       // defining an onopen method
       socket.onopen = () => {
@@ -161,6 +87,11 @@ const req_handler = async incoming_req => {
          // assign false to 
          // audio_enabled property
          socket.audio_enabled = false
+         socket.id = id
+         socket.server = {
+            name: server_name,
+            id: server_id,
+         }
 
          // add socket to map
          sockets.set (id, socket)
@@ -168,7 +99,7 @@ const req_handler = async incoming_req => {
          // bundle, stringify, & send ID
          // to the client via the socket 
          socket.send (JSON.stringify ({ 
-            method : `id`,
+            method : `info`,
             content :  [ id, nickname, server_name ],
          }))
 
