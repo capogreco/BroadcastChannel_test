@@ -1,5 +1,5 @@
 // ~ WEBSOCKET THINGS ~
-let id = null
+const info = {}
 let all_clear = true
 
 function give_all_clear () {
@@ -21,14 +21,18 @@ socket.onmessage = m => {
    const msg = JSON.parse (m.data)
 
    const handle_incoming = {
-      id: () => {
-         id = msg.content
-         console.log (`identity is ${ id }`)
+      info: () => {
+         Object.assign (info, msg.content)
+         console.log (`id = ${ info.id }`)
+         console.log (` ... but call me ${ info.name }`)
+         console.log (` ... receiving service from ${ info.server.name }`)
+
          socket.send (JSON.stringify ({
             method: `request_control`,
-            content: id,
+            content: info.id,
          }))
       },
+      
       sockets: () => {
          socket_list.textContent = ``
          msg.content.forEach (e => {

@@ -1,8 +1,6 @@
 // ~ WEBSOCKET THINGS ~
 
-let id = null
-let nickname = null
-let server_name = null
+const info = {}
 
 // const ws_address = `ws://localhost`
 const ws_address = `wss://expensive-ferret-59.deno.dev`
@@ -22,17 +20,15 @@ socket.onmessage = m => {
 
    const handle_incoming = {
 
-      id: () => {
-         id = msg.content[0]
-         nickname = msg.content[1]
-         server_name = msg.content[2]
-         console.log (`id = ${ id }`)
-         console.log (` ... and they will refer to me as ${ nickname}`)
-         console.log (`service c/o ${ server_name }`)
+      info: () => {
+         Object.assign (info, msg.content)
+         console.log (`id = ${ info.id }`)
+         console.log (` ... but call me ${ info.name }`)
+         console.log (` ... receiving service from ${ info.server.name }`)
 
          socket.send (JSON.stringify ({
             method: `greeting`,
-            content: `${ nickname } has joined`
+            content: `${ info.name } has joined`
          }))
       },
 

@@ -4,9 +4,11 @@ import { generate } from "https://deno.land/std@0.185.0/uuid/v1.ts"
 import { generate_nickname } from "./modules/nickname"
 
 const server_name = generate_nickname (`server`)
-const server_id = generate ()
+const server_id   = generate ()
+const sockets     = new Map ()
+let  control      = false
 
-console.log (`this server is called ${ server_name }`)
+console.log (`${ server_name } booting up`)
 
 const channel = new BroadcastChannel (`server_channel`)
 channel.postMessage (
@@ -52,10 +54,6 @@ channel.onmessage = e => {
 }
 
 // map to manage sockets
-const sockets = new Map ()
-
-let control    = false
-let is_playing = false
 
 
 // function to manage requests
@@ -79,7 +77,7 @@ const req_handler = async incoming_req => {
 
       // generate a unique ID
       const id = generate ()
-      const nickname = generate_nickname (`synth`)
+      const name = generate_nickname (`synth`)
 
       // defining an onopen method
       socket.onopen = () => {
@@ -87,7 +85,10 @@ const req_handler = async incoming_req => {
          // assign false to 
          // audio_enabled property
          socket.audio_enabled = false
-         socket.id = id
+
+         // assign ID information to socket
+         socket.id     = id
+         socket.name   = name
          socket.server = {
             name: server_name,
             id: server_id,
@@ -97,10 +98,17 @@ const req_handler = async incoming_req => {
          sockets.set (id, socket)
 
          // bundle, stringify, & send ID
-         // to the client via the socket 
+         // to the synth via the socket 
          socket.send (JSON.stringify ({ 
             method : `info`,
-            content :  [ id, nickname, server_name ],
+            content :  { 
+               id, 
+               name, 
+               server: {
+                  server_id,
+                  server_name
+               }
+            }
          }))
 
          // call update_control function
@@ -116,23 +124,6 @@ const req_handler = async incoming_req => {
          // object housing methods for
          // managing incoming msgs
          const manage_incoming = {
-
-            // method for updating state
-            upstate: () => {
-               const start = msg.content.is_playing && !state.is_playing
-
-               Object.assign (state, msg.content)
-
-               // sockets.forEach (s => {
-               //    if (s.readyState == 1) {
-               //       s.send (JSON.stringify (msg))
-               //    }
-               // })
-
-               if (start) {
-                  play_note ()
-               }
-            },
 
             // method for requests for control
             request_control: () => {
@@ -174,26 +165,10 @@ const req_handler = async incoming_req => {
                socket.joined = msg.content
 
                // print to console:
-               console.log (`${ id } has joined!`)
+               console.log (`${ id } has joined ${ server_name }!`)
 
                // call update_control
                update_control ()
-
-
-
-               // if already playing
-               // if (is_playing) {
-
-               //    // construct play msg
-               //    // with current state
-               //    const play_msg = {
-               //       method: 'play',
-               //       content: state,
-               //    }
-
-               //    // send play_msg to socket
-               //    socket.send (JSON.stringify (play_msg))
-               // }
             },
 
             greeting: () => {
@@ -251,7 +226,7 @@ const req_handler = async incoming_req => {
 
       // route requests to this
       // directory in the file system
-      fsRoot: path.includes (`ctrl`) ? `` : `client`
+      fsRoot: path.includes (`ctrl`) ? `` : `synth`
    }
 
    // return the requested asset
