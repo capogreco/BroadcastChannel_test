@@ -3,7 +3,9 @@ import { serveDir } from "https://deno.land/std@0.185.0/http/file_server.ts"
 import { generate } from "https://deno.land/std@0.185.0/uuid/v1.ts"
 import { generate_nickname } from "./modules/nickname.js"
 
-const server_name = await generate_nickname (`server`)
+const server_name = generate_nickname (`server`)
+if (!server_name) throw new Error (`server name not generated`)
+
 const server_id   = generate ()
 const sockets     = new Map ()
 const servers     = new Map ()
