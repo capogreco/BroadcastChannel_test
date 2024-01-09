@@ -3,7 +3,7 @@
 const info = {}
 
 // const ws_address = `ws://localhost`
-const ws_address = `wss://expensive-ferret-59.deno.dev`
+const ws_address = `wss://polite-gecko-95.deno.dev`
 
 console.log (`attempting websocket at ${ ws_address }`)
 
