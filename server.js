@@ -1,7 +1,7 @@
 import { serve }    from "https://deno.land/std@0.185.0/http/server.ts"
 import { serveDir } from "https://deno.land/std@0.185.0/http/file_server.ts"
 import { generate } from "https://deno.land/std@0.185.0/uuid/v1.ts"
-import { generate_nickname } from "./modules/nickname"
+import { generate_nickname } from "./modules/nickname.js"
 
 const server_name = generate_nickname (`server`)
 const server_id   = generate ()
