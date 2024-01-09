@@ -267,8 +267,8 @@ function update_control () {
       control.send (JSON.stringify ({
          method: `list`,
          content: {
-            servers,
-            sockets,
+            servers: Object.fromEntries (servers),
+            sockets: Object.fromEntries (sockets),
          }
       }))
    }
