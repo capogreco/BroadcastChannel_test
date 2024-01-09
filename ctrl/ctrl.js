@@ -27,6 +27,8 @@ socket.onmessage = m => {
          console.log (` ... but call me ${ info.name }`)
          console.log (` ... receiving service from ${ info.server.name }`)
 
+         console.dir (info)
+
          socket.send (JSON.stringify ({
             method: `request_control`,
             content: info.id,

@@ -4,8 +4,6 @@ import { generate } from "https://deno.land/std@0.185.0/uuid/v1.ts"
 import { generate_nickname } from "./modules/nickname.js"
 
 const server_name = generate_nickname (`server`)
-if (!server_name) throw new Error (`server name not generated`)
-
 const server_id   = generate ()
 const sockets     = new Map ()
 const servers     = new Map ()
@@ -35,6 +33,7 @@ function send_info () {
          sockets: Array.from (sockets.entries ()),
       }      
    }
+
    channel.postMessage (JSON.stringify (msg))
 }
 
@@ -45,11 +44,13 @@ channel.onmessage = e => {
 
    const manage = {
       send_info,
+
       info: () => {
          if (!control) return
          console.log (`${ server_name } is receiving info from ${ msg.content.name }`)
          servers.set (msg.content.id, msg.content)
       },
+
       check_in: () => {
          if (!control) return
          console.log (`${ msg.content.name } checking in`)
@@ -109,7 +110,7 @@ const req_handler = async incoming_req => {
             method : `info`,
             content :  { 
                id, 
-               name, 
+               name,
                server: {
                   server_id,
                   server_name
