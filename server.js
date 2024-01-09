@@ -6,11 +6,13 @@ import { generate_nickname } from "./modules/nickname"
 const server_name = generate_nickname (`server`)
 const server_id   = generate ()
 const sockets     = new Map ()
+const servers     = new Map ()
 let  control      = false
 
 console.log (`${ server_name } booting up`)
 
 const channel = new BroadcastChannel (`server_channel`)
+
 channel.postMessage (
    JSON.stringify ({
       method: `check_in`,
@@ -25,8 +27,10 @@ function send_info () {
    const msg = {
       method: `info`,
       content: {
-         name: server_name, 
-         sockets: Array.from (sockets.entries ())
+         id: server_id,
+         name: server_name,
+         control: control ? true : false,
+         sockets: Array.from (sockets.entries ()),
       }      
    }
    channel.postMessage (JSON.stringify (msg))
@@ -42,6 +46,7 @@ channel.onmessage = e => {
       info: () => {
          if (!control) return
          console.log (`${ msg.content.name } is connected to ${ server_name }`)
+         servers.set (msg.content.id, msg.content)
       },
       check_in: () => {
          if (!control) return
@@ -53,7 +58,6 @@ channel.onmessage = e => {
    manage[msg.method] ()
 }
 
-// map to manage sockets
 
 
 // function to manage requests
@@ -239,24 +243,29 @@ const req_handler = async incoming_req => {
 serve (req_handler, { port: 80 })
 
 // function to keep ctrl up to date
+function update_socket_list () {
+   // construct a msg object
+   const msg = {
+
+      // method is 'sockets'
+      method: 'sockets',
+
+      // contents is the list of
+      // sockets in array form
+      content: Array.from (sockets.entries ())
+   }
+
+}
+
 function update_control () {
 
-   // if there is a control socket
+   send_info ()
+
    if (control) {
-
-      // construct a msg object
-      const msg = {
-
-         // method is 'sockets'
-         method: 'sockets',
-
-         // contents is the list of
-         // sockets in array form
-         content: Array.from (sockets.entries ())
-      }
-
-      // send msg to control
-      control.send (JSON.stringify (msg))
+      control.send (JSON.stringify ({
+         method: `servers`,
+         content: servers
+      }))
    }
 }
 
