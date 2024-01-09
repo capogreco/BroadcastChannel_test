@@ -112,8 +112,8 @@ const req_handler = async incoming_req => {
                id, 
                name,
                server: {
-                  server_id,
-                  server_name
+                  id : server_id,
+                  name: server_name,
                }
             }
          }))
