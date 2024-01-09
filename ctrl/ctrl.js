@@ -25,9 +25,7 @@ socket.onmessage = m => {
          Object.assign (info, msg.content)
          console.log (`id = ${ info.id }`)
          console.log (` ... but call me ${ info.name }`)
-         console.log (` ... receiving service from ${ info.server.name }`)
-
-         console.dir (info)
+         console.log (`receiving service from ${ info.server.name }`)
 
          socket.send (JSON.stringify ({
             method: `request_control`,
@@ -37,16 +35,16 @@ socket.onmessage = m => {
 
       servers: () => {
          console.log (`servers:`)
-         console.dir (msg.content)
+         console.dir (msg)
          socket_list.textContent = ``
-         msg.content.forEach (e => {
-            // const div = document.createElement (`div`)
-            // div.innerText = e.name
-            // div.style.width      = `100%`
-            // div.style.userSelect = `none`
-            // div.style.color = e[1].joined ? `white` : `grey`
-            // socket_list.appendChild (div)
-         })
+         // msg.content.forEach (e => {
+         //    // const div = document.createElement (`div`)
+         //    // div.innerText = e.name
+         //    // div.style.width      = `100%`
+         //    // div.style.userSelect = `none`
+         //    // div.style.color = e[1].joined ? `white` : `grey`
+         //    // socket_list.appendChild (div)
+         // })
       }
    }
 
