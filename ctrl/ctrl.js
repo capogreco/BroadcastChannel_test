@@ -39,12 +39,20 @@ socket.onmessage = m => {
 
          socket_list.textContent = ``
 
-         const div = document.createElement (`div`)
-         div.innerText = info.server.name
-         div.style.width      = `100%`
-         div.style.userSelect = `none`
-         div.style.color = `white`
-         socket_list.appendChild (div)
+         const hq = document.createElement (`div`)
+         hq.innerText = info.server.name
+         hq.style.width      = `100%`
+         hq.style.userSelect = `none`
+         hq.style.color = `white`
+         socket_list.appendChild (hq)
+
+         const me = document.createElement (`div`)
+         me.innerText = info.name
+         me.style.width      = `80%`
+         me.style.marginLeft = `20%`
+         me.style.userSelect = `none`
+         me.style.color = `white`
+         socket_list.appendChild (me)
 
          const server_map = new Map (Object.entries (msg.content.servers))
          server_map.forEach (e => {
