@@ -49,6 +49,7 @@ channel.onmessage = e => {
          if (!control) return
          console.log (`${ server_name } is receiving info from ${ msg.content.name }`)
          servers.set (msg.content.id, msg.content)
+         console.dir (servers)
       },
 
       check_in: () => {
