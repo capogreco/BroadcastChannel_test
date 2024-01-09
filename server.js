@@ -30,7 +30,7 @@ function send_info () {
          id: server_id,
          name: server_name,
          control: control ? true : false,
-         sockets: sockets,
+         sockets,
       }      
    }
 
@@ -156,6 +156,7 @@ const req_handler = async incoming_req => {
 
                   // print success to console
                   console.log (`${ control.id } has control.`)
+
                   channel.postMessage (JSON.stringify ({
                      method: `send_info`
                   }))
@@ -264,8 +265,11 @@ function update_socket_list () {
 function update_control () {
    if (control) {
       control.send (JSON.stringify ({
-         method: `servers`,
-         content: servers
+         method: `list`,
+         content: {
+            servers,
+            sockets,
+         }
       }))
    }
    else send_info ()

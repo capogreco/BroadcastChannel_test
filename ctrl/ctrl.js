@@ -33,8 +33,8 @@ socket.onmessage = m => {
          }))
       },
 
-      servers: () => {
-         console.log (`servers:`)
+      list: () => {
+         console.log (`list:`)
          console.dir (msg)
          socket_list.textContent = ``
          // msg.content.forEach (e => {
