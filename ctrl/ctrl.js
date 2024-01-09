@@ -48,8 +48,8 @@ socket.onmessage = m => {
 
          const me = document.createElement (`div`)
          me.innerText = info.name
-         me.style.width      = `80%`
-         me.style.marginLeft = `20%`
+         me.style.width      = `96%`
+         me.style.marginLeft = `4%`
          me.style.userSelect = `none`
          me.style.color = `white`
          socket_list.appendChild (me)
