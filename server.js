@@ -3,11 +3,11 @@ import { serveDir } from "https://deno.land/std@0.185.0/http/file_server.ts"
 import { generate } from "https://deno.land/std@0.185.0/uuid/v1.ts"
 import { generate_nickname } from "./modules/nickname.js"
 
-const server_name = generate_nickname (`server`)
+const server_name = await generate_nickname (`server`)
 const server_id   = generate ()
 const sockets     = new Map ()
 const servers     = new Map ()
-let  control      = false
+let   control     = false
 
 console.log (`${ server_name } booting up`)
 
@@ -45,7 +45,7 @@ channel.onmessage = e => {
       send_info,
       info: () => {
          if (!control) return
-         console.log (`${ msg.content.name } is connected to ${ server_name }`)
+         console.log (`${ server_name } is receiving info from ${ msg.content.name }`)
          servers.set (msg.content.id, msg.content)
       },
       check_in: () => {
@@ -258,15 +258,13 @@ function update_socket_list () {
 }
 
 function update_control () {
-
-   send_info ()
-
    if (control) {
       control.send (JSON.stringify ({
          method: `servers`,
          content: servers
       }))
    }
+   else send_info ()
 }
 
 // function to check for closed sockets
