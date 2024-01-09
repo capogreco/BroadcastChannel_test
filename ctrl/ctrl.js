@@ -46,8 +46,8 @@ socket.onmessage = m => {
          div.style.color = `white`
          socket_list.appendChild (div)
 
-
-         msg.content.servers.forEach (e => {
+         const server_map = new Map (Object.entries (msg.content.servers))
+         server_map.forEach (e => {
             const div = document.createElement (`div`)
             div.innerText = e.name
             div.style.width      = `100%`
