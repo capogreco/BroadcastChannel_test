@@ -34,9 +34,10 @@ socket.onmessage = m => {
       },
 
       servers: () => {
+         console.log (`servers:`)
+         console.dir (msg.content)
          socket_list.textContent = ``
          msg.content.forEach (e => {
-            console.dir (e)
             // const div = document.createElement (`div`)
             // div.innerText = e.name
             // div.style.width      = `100%`
