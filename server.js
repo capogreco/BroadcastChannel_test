@@ -30,7 +30,7 @@ function send_info () {
          id: server_id,
          name: server_name,
          control: control ? true : false,
-         sockets: Array.from (sockets.entries ()),
+         sockets: sockets,
       }      
    }
 
