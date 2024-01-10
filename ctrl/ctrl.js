@@ -54,7 +54,7 @@ socket.onmessage = m => {
          me.style.color = `white`
          socket_list.appendChild (me)
       
-         const local_sockets = new Map (Object.fromEntries (msg.content.sockets))
+         const local_sockets = new Map (Object.entries (msg.content.sockets))
          local_sockets.forEach (e => {
             const div = document.createElement (`div`)
             div.innerText = e.name
@@ -65,7 +65,7 @@ socket.onmessage = m => {
             socket_list.appendChild (div)
          })
 
-         const server_map = new Map (Object.fromEntries (msg.content.servers))
+         const server_map = new Map (Object.entries (msg.content.servers))
          server_map.forEach (e => {
             const div = document.createElement (`div`)
             div.innerText = e.name
