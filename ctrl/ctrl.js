@@ -53,15 +53,38 @@ socket.onmessage = m => {
          me.style.userSelect = `none`
          me.style.color = `white`
          socket_list.appendChild (me)
+      
+         const local_sockets = new Map (Object.fromEntries (msg.content.sockets))
+         local_sockets.forEach (e => {
+            const div = document.createElement (`div`)
+            div.innerText = e.name
+            div.style.width      = `96%`
+            div.style.marginLeft = `4%`
+            div.style.userSelect = `none`
+            div.style.color = `grey`
+            socket_list.appendChild (div)
+         })
 
-         const server_map = new Map (Object.entries (msg.content.servers))
+         const server_map = new Map (Object.fromEntries (msg.content.servers))
          server_map.forEach (e => {
             const div = document.createElement (`div`)
             div.innerText = e.name
             div.style.width      = `100%`
+            div.style.marginLeft = `0%`
             div.style.userSelect = `none`
             div.style.color = `grey`
             socket_list.appendChild (div)
+
+            const socket_map = new Map (Object.fromEntries (e.sockets))
+            socket_map.forEach (f => {
+               const div = document.createElement (`div`)
+               div.innerText = f.name
+               div.style.width      = `92%`
+               div.style.marginLeft = `8%`
+               div.style.userSelect = `none`
+               div.style.color = `grey`
+               socket_list.appendChild (div)
+            })
          })
       }
    }
