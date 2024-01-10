@@ -75,7 +75,7 @@ socket.onmessage = m => {
             div.style.color = `grey`
             socket_list.appendChild (div)
 
-            const socket_map = new Map (Object.fromEntries (e.sockets))
+            const socket_map = new Map (Object.entries (e.sockets))
             socket_map.forEach (f => {
                const div = document.createElement (`div`)
                div.innerText = f.name
