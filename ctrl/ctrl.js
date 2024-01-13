@@ -126,6 +126,15 @@ const ctx = cnv.getContext (`2d`)
 ctx.fillStyle = `indigo`
 ctx.fillRect (0, 0, cnv.width, cnv.height)
 
+window.onresize = () => {
+   cnv.width  = innerWidth
+   cnv.height = innerHeight
+   background ()
+
+   socket_list.style.width      = `${ innerWidth }px`
+   socket_list.style.height     = `${ innerHeight }px`         
+}
+
 let pointer_down = false
 
 function background () {
