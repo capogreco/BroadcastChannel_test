@@ -34,7 +34,7 @@ export class ServerNode {
          })
       )
 
-      setInterval (this.check_sockets, 200)
+      setInterval (this.check_sockets.bind (this), 200)
    }
 
    manage_afferent (msg) {
