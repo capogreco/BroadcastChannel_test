@@ -38,52 +38,24 @@ socket.onmessage = m => {
          console.dir (msg)
 
          socket_list.textContent = ``
-
-         const hq = document.createElement (`div`)
-         hq.innerText = info.server.name
-         hq.style.width      = `100%`
-         hq.style.userSelect = `none`
-         hq.style.color = `white`
-         socket_list.appendChild (hq)
-
-         const me = document.createElement (`div`)
-         me.innerText = info.name
-         me.style.width      = `96%`
-         me.style.marginLeft = `4%`
-         me.style.userSelect = `none`
-         me.style.color = `white`
-         socket_list.appendChild (me)
       
-         const local_sockets = new Map (Object.entries (msg.content.sockets))
-         local_sockets.forEach (e => {
-            const div = document.createElement (`div`)
-            div.innerText = e.name
-            div.style.width      = `96%`
-            div.style.marginLeft = `4%`
-            div.style.userSelect = `none`
-            div.style.color = `grey`
-            socket_list.appendChild (div)
-         })
+         msg.content.forEach (serv => {
+            const serv_div = document.createElement (`div`)
+            serv_div.innerText = serv.id.name
+            serv_div.style.width      = `100%`
+            serv_div.style.marginLeft = `0%`
+            serv_div.style.userSelect = `none`
+            serv_div.style.color = `grey`
+            socket_list.appendChild (serv_div)
 
-         const server_map = new Map (Object.entries (msg.content.servers))
-         server_map.forEach (e => {
-            const div = document.createElement (`div`)
-            div.innerText = e.name
-            div.style.width      = `100%`
-            div.style.marginLeft = `0%`
-            div.style.userSelect = `none`
-            div.style.color = `grey`
-            socket_list.appendChild (div)
-
-            const socket_map = new Map (Object.entries (e.sockets))
-            socket_map.forEach (f => {
-               const div = document.createElement (`div`)
-               div.innerText = f.name
-               div.style.width      = `92%`
-               div.style.marginLeft = `8%`
-               div.style.userSelect = `none`
-               div.style.color = `grey`
-               socket_list.appendChild (div)
+            s.sockets.forEach (sock => {
+               const sock_div = document.createElement (`div`)
+               sock_div.innerText = sock.id.name
+               sock_div.style.width      = `92%`
+               sock_div.style.marginLeft = `8%`
+               sock_div.style.userSelect = `none`
+               sock_div.style.color = `grey`
+               socket_list.appendChild (sock_div)
             })
          })
       }

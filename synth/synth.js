@@ -1,6 +1,7 @@
 // ~ WEBSOCKET THINGS ~
 
-const info = {}
+const id     = {}
+const server = {}
 
 // const ws_address = `ws://localhost`
 const ws_address = `wss://polite-gecko-95.deno.dev`
@@ -20,26 +21,18 @@ socket.onmessage = m => {
 
    const handle_incoming = {
 
-      info: () => {
-         Object.assign (info, msg.content)
-         console.log (`id = ${ info.id }`)
-         console.log (` ... but call me ${ info.name }`)
-         console.log (`receiving service from ${ info.server.name }`)
+      id: () => {
+         Object.assign (id, msg.content.id)
+         Object.assign (server, msg.content.server)
+         console.log (`id = ${ id.no }`)
+         console.log (` ... but call me ${ id.name }`)
+         console.log (`receiving service from ${ id.server.name }`)
 
          socket.send (JSON.stringify ({
-            method: `greeting`,
-            content: `${ info.name } has joined`
+            method: `pong`,
          }))
       },
 
-      // upstate: () => {
-      //    Object.assign (state, msg.content)
-      //    const t = audio_context.currentTime
-      //    rev_gate.gain.cancelScheduledValues (t)
-      //    rev_gate.gain.setValueAtTime (rev_gate.gain.value, t)
-      //    const r = (1 - state.y) ** 6
-      //    rev_gate.gain.linearRampToValueAtTime (r, t + 0.2)
-      // },
 
       note: () => {
          if (audio_context.state == `running`) {
@@ -115,12 +108,7 @@ document.body.onclick = async () => {
       text_div.remove ()
       requestAnimationFrame (draw_frame)
 
-      const msg = {
-         method: 'join',
-         content: true,
-      }
-
-      socket.send (JSON.stringify (msg))   
+      socket.send (JSON.stringify ({ method: 'ready' }))   
    }
 }
 
