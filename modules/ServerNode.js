@@ -105,7 +105,7 @@ export class ServerNode {
                name : generate_nickname (`synth`),
             }
    
-            this.sockets.set (id.no, socket)
+            this.sockets.set (this.id.no, socket)
             this.socket.send (JSON.stringify ({
                method  : `id`,
                content :  socket,
