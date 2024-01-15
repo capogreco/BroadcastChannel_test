@@ -1,7 +1,7 @@
 import { serveDir } from "https://deno.land/std@0.185.0/http/file_server.ts"
 import { generate } from "https://deno.land/std@0.185.0/uuid/v1.ts"
-import { generate_nickname } from "./modules/nickname.js"
-import { replacer, reviver } from "./modules/replacer.js"
+import { generate_nickname } from "./nickname.js"
+import { replacer, reviver } from "./replacer.js"
 
 export class ServerNode {
    constructor () {
