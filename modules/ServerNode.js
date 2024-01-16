@@ -90,12 +90,16 @@ export class ServerNode {
 
    async req_handler (incoming_req) {
       let req = incoming_req
+      console.log (`req is ${ req }`)
+
       const path = new URL (req.url).pathname
       const upgrade = req.headers.get ("upgrade") || ""
+
       if (upgrade.toLowerCase () == "websocket") {
-
+         
          const { socket, response } = Deno.upgradeWebSocket (req)
-
+         console.log (`socket is ${ socket }`)
+         
          socket.onopen = () => {
             socket.audio_enabled = false
             socket.ping          = Date.now ()
