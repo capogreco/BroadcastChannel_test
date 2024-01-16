@@ -65,7 +65,7 @@ export class ServerNode {
       console.log (`this is:`)
       console.dir (this)
       console.log (`${ this.id.name } recieved ${ msg.method } message`)
-      manage_method[msg.method] (msg).bind (this)
+      manage_method[msg.method] (msg)
    }
 
    send_info () {
