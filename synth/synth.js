@@ -26,7 +26,7 @@ socket.onmessage = m => {
          Object.assign (server, msg.content.server)
          console.log (`id = ${ id.no }`)
          console.log (` ... but call me ${ id.name }`)
-         console.log (`receiving service from ${ id.server.name }`)
+         console.log (`receiving service from ${ server.name }`)
 
          socket.send (JSON.stringify ({
             method: `pong`,
