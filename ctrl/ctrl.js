@@ -18,7 +18,6 @@ const ws_address = `wss://polite-gecko-95.deno.dev`
 const socket = new WebSocket (ws_address)
 
 socket.onmessage = m => {
-   console.log (`message recieved`)
    const msg = JSON.parse (m.data)
 
    const handle_incoming = {
@@ -62,6 +61,7 @@ socket.onmessage = m => {
       }
    }
 
+   console.log (`${ msg.method } message recieved`)
    handle_incoming[msg.method] ()
 }
 
