@@ -62,6 +62,7 @@ export class ServerNode {
          request_info   : this.send_info,
          send_to_socket : this.send_to_socket,
       }
+      console.log (`${ this.id.name } recieved ${ msg.method } message`)
       manage_method[msg.method] (msg)
    }
 
