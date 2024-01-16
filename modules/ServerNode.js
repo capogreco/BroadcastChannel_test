@@ -25,7 +25,7 @@ export class ServerNode {
             efferent: this.manage_efferent
          }
          console.log (`${ this.id.name } recieved ${ msg.type } message`)
-         manage_type[msg.type] (msg)
+         manage_type[msg.type] (msg).bind (this)
       }
       this.channel.postMessage (
          JSON.stringify ({
@@ -44,7 +44,7 @@ export class ServerNode {
          check_in : this.manage_check_in,
          info     : this.manage_info,
       }
-      manage_method[msg.method] (msg)
+      manage_method[msg.method] (msg).bind (this)
    }
 
    manage_check_in (msg) {
@@ -62,9 +62,10 @@ export class ServerNode {
          request_info   : this.send_info,
          send_to_socket : this.send_to_socket,
       }
-      console.dir (this.id)
+      console.log (`this is:`)
+      console.dir (this)
       console.log (`${ this.id.name } recieved ${ msg.method } message`)
-      manage_method[msg.method] (msg)
+      manage_method[msg.method] (msg).bind (this)
    }
 
    send_info () {
