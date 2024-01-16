@@ -169,7 +169,7 @@ function draw_frame () {
 }
 
 function check_websocket () {
-   if (socket.readyState > 1) location.reload ()
+   // if (socket.readyState > 1) location.reload ()
    setTimeout (check_websocket, 333)
 }
 
