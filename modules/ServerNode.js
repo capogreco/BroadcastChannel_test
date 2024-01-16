@@ -15,7 +15,7 @@ export class ServerNode {
       this.servers = new Map ()
       this.control = false
 
-      console.log (`${ this.server_name } booting up`)
+      console.log (`${ this.id.name } booting up`)
 
       this.channel = new BroadcastChannel (`server_node_channel`)
       this.channel.onmessage = e => {
