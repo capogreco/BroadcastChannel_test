@@ -18,10 +18,11 @@ const ws_address = `wss://polite-gecko-95.deno.dev`
 const socket = new WebSocket (ws_address)
 
 socket.onmessage = m => {
+   console.log (`message recieved`)
    const msg = JSON.parse (m.data)
 
    const handle_incoming = {
-      info: () => {
+      id: () => {
          Object.assign (info, msg.content)
          console.log (`id = ${ info.id }`)
          console.log (` ... but call me ${ info.name }`)
