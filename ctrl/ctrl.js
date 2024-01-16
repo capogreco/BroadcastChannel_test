@@ -1,3 +1,5 @@
+import { reviver } from "./modules/replacer.js"
+
 // ~ WEBSOCKET THINGS ~
 const info = {}
 let all_clear = true
@@ -18,7 +20,7 @@ const ws_address = `wss://polite-gecko-95.deno.dev`
 const socket = new WebSocket (ws_address)
 
 socket.onmessage = m => {
-   const msg = JSON.parse (m.data, replacer)
+   const msg = JSON.parse (m.data, reviver)
 
    const handle_incoming = {
       id: () => {
