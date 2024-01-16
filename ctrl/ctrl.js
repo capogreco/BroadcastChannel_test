@@ -23,8 +23,8 @@ socket.onmessage = m => {
    const handle_incoming = {
       id: () => {
          Object.assign (info, msg.content)
-         console.log (`id = ${ info.id }`)
-         console.log (` ... but call me ${ info.name }`)
+         console.log (`id = ${ info.id.no }`)
+         console.log (` ... but call me ${ info.id.name }`)
          console.log (`receiving service from ${ info.server.name }`)
 
          socket.send (JSON.stringify ({
