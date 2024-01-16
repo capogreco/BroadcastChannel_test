@@ -62,9 +62,6 @@ export class ServerNode {
          request_info   : this.send_info.bind (this),
          send_to_socket : this.send_to_socket.bind (this),
       }
-      console.log (`this is:`)
-      console.dir (this)
-      console.log (`${ this.id.name } received ${ msg.method } message`)
       manage_method[msg.method] (msg)
    }
 
@@ -101,7 +98,6 @@ export class ServerNode {
 
    async req_handler (incoming_req) {
       let req = incoming_req
-      console.log (`req is ${ req }`)
 
       const path = new URL (req.url).pathname
       const upgrade = req.headers.get ("upgrade") || ""
@@ -159,9 +155,10 @@ export class ServerNode {
 
                ready: () => {
                   socket.audio_enabled = true
-                  update_control ()
+                  this.update_control ()
                },   
             }
+            console.log (msg.method)
             manage_incoming[msg.method] ()
          }
    
@@ -176,7 +173,7 @@ export class ServerNode {
    
             else {
                this.sockets.delete (socket.id.no)
-               update_control ()
+               this.update_control ()
             }
          }
          return response
