@@ -18,7 +18,7 @@ const ws_address = `wss://polite-gecko-95.deno.dev`
 const socket = new WebSocket (ws_address)
 
 socket.onmessage = m => {
-   const msg = JSON.parse (m.data)
+   const msg = JSON.parse (m.data, replacer)
 
    const handle_incoming = {
       id: () => {
