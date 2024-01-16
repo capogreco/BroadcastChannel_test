@@ -129,7 +129,8 @@ export class ServerNode {
                      this.sockets.delete (socket.id)
                      this.update_control ()
                      this.channel.postMessage (JSON.stringify ({
-                        method: `request_info`
+                        type    : `efferent`,
+                        method: `request_info`,
                      }))
                      let self_copy = JSON.stringify(this, replacer)
                      self_copy = JSON.parse (self_copy, reviver)
