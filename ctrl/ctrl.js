@@ -48,7 +48,7 @@ socket.onmessage = m => {
             serv_div.style.color = `grey`
             socket_list.appendChild (serv_div)
 
-            s.sockets.forEach (sock => {
+            serv.sockets.forEach (sock => {
                const sock_div = document.createElement (`div`)
                sock_div.innerText = sock.id.name
                sock_div.style.width      = `92%`
