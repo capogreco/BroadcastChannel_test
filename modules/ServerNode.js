@@ -62,6 +62,7 @@ export class ServerNode {
          request_info   : this.send_info,
          send_to_socket : this.send_to_socket,
       }
+      console.dir (this.id)
       console.log (`${ this.id.name } recieved ${ msg.method } message`)
       manage_method[msg.method] (msg)
    }
@@ -127,16 +128,16 @@ export class ServerNode {
                request_control: () => {
                   if (!this.control) {
                      this.control = socket
-                     this.sockets.delete (socket.id)
+                     this.sockets.delete (socket.id.no)
                      this.update_control ()
                      this.channel.postMessage (JSON.stringify ({
-                        type    : `efferent`,
-                        method: `request_info`,
+                        type   : `efferent`,
+                        method : `request_info`,
                      }))
                      let self_copy = JSON.stringify(this, replacer)
                      self_copy = JSON.parse (self_copy, reviver)
                      this.servers.set (this.id.no, self_copy)
-                     console.log (`${ this.control.id } has control.`)
+                     console.log (`${ this.control.id.name } has control.`)
                   }
                   else console.log (`${ id } wants control!`)
                },
