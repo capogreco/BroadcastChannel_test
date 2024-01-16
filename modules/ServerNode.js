@@ -123,8 +123,8 @@ export class ServerNode {
             const msg = JSON.parse (m.data, reviver)
             const manage_incoming = {
                request_control: () => {
-                  if (!control) {
-                     control = socket
+                  if (!this.control) {
+                     this.control = socket
                      sockets.delete (socket.id)
                      update_control ()
                      channel.postMessage (JSON.stringify ({
@@ -133,7 +133,7 @@ export class ServerNode {
                      let self_copy = JSON.stringify(this, replacer)
                      self_copy = JSON.parse (self_copy, reviver)
                      this.servers.set (this.id.no, self_copy)
-                     console.log (`${ control.id } has control.`)
+                     console.log (`${ this.control.id } has control.`)
                   }
                   else console.log (`${ id } wants control!`)
                },
@@ -155,14 +155,14 @@ export class ServerNode {
    
          socket.onerror = e => console.log(`socket error: ${ e.message }`)
          socket.onclose = () => {
-            if (control) {
-               if (control.id == id) {
-                  control = false
+            if (this.control) {
+               if (this.control.id == id) {
+                  this.control = false
                }
             }
    
             else {
-               sockets.delete (id)
+               this.sockets.delete (id)
                update_control ()
             }
          }
