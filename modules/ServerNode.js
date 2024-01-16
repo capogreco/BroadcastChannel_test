@@ -44,7 +44,7 @@ export class ServerNode {
          check_in : this.manage_check_in.bind (this),
          info     : this.manage_info.bind (this),
       }
-      manage_method[msg.method] (msg).bind (this)
+      manage_method[msg.method] (msg)
    }
 
    manage_check_in (msg) {
@@ -64,7 +64,7 @@ export class ServerNode {
       }
       console.log (`this is:`)
       console.dir (this)
-      console.log (`${ this.id.name } recieved ${ msg.method } message`)
+      console.log (`${ this.id.name } received ${ msg.method } message`)
       manage_method[msg.method] (msg)
    }
 
