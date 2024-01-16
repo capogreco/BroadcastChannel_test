@@ -99,7 +99,7 @@ export class ServerNode {
          
          const { socket, response } = Deno.upgradeWebSocket (req)
          console.log (`socket is ${ socket }`)
-         
+
          socket.onopen = () => {
             socket.audio_enabled = false
             socket.ping          = Date.now ()
@@ -110,7 +110,7 @@ export class ServerNode {
             }
    
             this.sockets.set (this.id.no, socket)
-            this.socket.send (JSON.stringify ({
+            socket.send (JSON.stringify ({
                method  : `id`,
                content :  socket,
             }), replacer)
