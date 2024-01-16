@@ -125,7 +125,7 @@ export class ServerNode {
                request_control: () => {
                   if (!this.control) {
                      this.control = socket
-                     sockets.delete (socket.id)
+                     this.sockets.delete (socket.id)
                      update_control ()
                      channel.postMessage (JSON.stringify ({
                         method: `request_info`
