@@ -159,13 +159,14 @@ export class ServerNode {
          socket.onerror = e => console.log(`socket error: ${ e.message }`)
          socket.onclose = () => {
             if (this.control) {
-               if (this.control.id == id) {
+               console.dir (this.control)
+               if (this.control.id.no == socket.id.no) {
                   this.control = false
                }
             }
    
             else {
-               this.sockets.delete (id)
+               this.sockets.delete (socket.id.no)
                update_control ()
             }
          }
