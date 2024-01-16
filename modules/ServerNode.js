@@ -41,8 +41,8 @@ export class ServerNode {
    manage_afferent (msg) {
       if (!this.control) return
       const manage_method = {
-         check_in : this.manage_check_in,
-         info     : this.manage_info,
+         check_in : this.manage_check_in.bind (this),
+         info     : this.manage_info.bind (this),
       }
       manage_method[msg.method] (msg).bind (this)
    }
@@ -59,8 +59,8 @@ export class ServerNode {
 
    manage_efferent (msg) {
       const manage_method = {
-         request_info   : this.send_info,
-         send_to_socket : this.send_to_socket,
+         request_info   : this.send_info.bind (this),
+         send_to_socket : this.send_to_socket.bind (this),
       }
       console.log (`this is:`)
       console.dir (this)
