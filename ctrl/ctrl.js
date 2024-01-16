@@ -1,5 +1,3 @@
-import { reviver } from "./modules/replacer.js"
-
 // ~ WEBSOCKET THINGS ~
 const info = {}
 let all_clear = true
@@ -185,3 +183,11 @@ document.body.onpointerup = e => {
 }
 
 
+function reviver (key, value) {
+   if (typeof value === `object` && value !== null) {
+      if (value.dataType === `Map`) {
+         return new Map (value.value)
+      }
+   }
+   return value
+}
