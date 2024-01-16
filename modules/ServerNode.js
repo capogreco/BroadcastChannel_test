@@ -21,8 +21,8 @@ export class ServerNode {
       this.channel.onmessage = e => {
          const msg = JSON.parse (e.data, reviver)
          const manage_type = {
-            afferent: this.manage_afferent,
-            efferent: this.manage_efferent
+            afferent: this.manage_afferent.bind (this),
+            efferent: this.manage_efferent.bind (this)
          }
          console.log (`${ this.id.name } recieved ${ msg.type } message`)
          manage_type[msg.type] (msg)
