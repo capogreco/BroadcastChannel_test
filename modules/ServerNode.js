@@ -24,6 +24,7 @@ export class ServerNode {
             afferent: this.manage_afferent,
             efferent: this.manage_efferent
          }
+         console.log (`${ this.id.name } recieved ${ msg.type } message`)
          manage_type[msg.type] (msg)
       }
       this.channel.postMessage (
