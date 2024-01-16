@@ -126,7 +126,7 @@ export class ServerNode {
                   if (!this.control) {
                      this.control = socket
                      this.sockets.delete (socket.id)
-                     update_control ()
+                     this.update_control ()
                      channel.postMessage (JSON.stringify ({
                         method: `request_info`
                      }))
@@ -139,7 +139,7 @@ export class ServerNode {
                },
 
                pong: () => {
-                  socket.ping -= Date.now () 
+                  socket.ping -= Date.now ()
                   socket.ping /= 2
                   socket.ping = Math.floor (socket.ping)
                   console.log (`${ socket.id.name }'s ping is ${ socket.ping }ms`)
