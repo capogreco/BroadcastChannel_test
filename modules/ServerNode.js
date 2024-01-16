@@ -77,6 +77,13 @@ export class ServerNode {
       this.channel.postMessage (JSON.stringify (msg, replacer))
    }
 
+   send_to_socket (msg) {
+      const socket = this.sockets.get (msg.content.id.no)
+      if (socket) {
+         socket.send (JSON.stringify (msg.content, replacer))
+      }
+   }
+
    check_sockets () {
       const removals = []
       this.sockets.forEach ((s, id) => {
