@@ -109,6 +109,7 @@ export class ServerNode {
 
          socket.onopen = () => {
             socket.audio_enabled = false
+            console.log (`socket.audio_enabled is ${ socket.audio_enabled }`)
             socket.control       = { 
                exists : false,
                id     : {   },
