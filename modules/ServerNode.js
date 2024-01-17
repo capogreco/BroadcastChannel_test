@@ -128,7 +128,7 @@ export class ServerNode {
                name : generate_nickname (`synth`),
             }
             console.log (`socket.id is ${ socket.id }`)
-            
+
             console.log (`${ this.id.name } is opening a socket with ${ socket.id.name }`)
             console.dir (socket)
             this.sockets.set (this.id.no, socket)
@@ -147,6 +147,10 @@ export class ServerNode {
                request_control: () => {
                   if (!this.control.exists) {
                      console.log (`request_control called in ${ this.id.name }`)   
+                     console.log (`socket.audio_enabled is ${ socket.audio_enabled }`)
+                     console.log (`socket.ping is ${ socket.ping }`)
+                     console.log (`socket.server is ${ socket.server }`)
+                     console.log (`socket.control is ${ socket.control }`)
                      console.log (socket)
                      Object.assign (this.control.id, socket.id)
                      this.control.exists = true
