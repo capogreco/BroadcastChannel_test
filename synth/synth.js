@@ -1,7 +1,5 @@
 // ~ WEBSOCKET THINGS ~
-
-const id     = {}
-const server = {}
+const info = {}
 
 // const ws_address = `ws://localhost`
 const ws_address = `wss://polite-gecko-95.deno.dev`
@@ -22,11 +20,8 @@ socket.onmessage = m => {
    const handle_incoming = {
 
       id: () => {
-         Object.assign (id, msg.content.id)
-         Object.assign (server, msg.content.server)
-         console.log (`id = ${ id.no }`)
-         console.log (` ... but call me ${ id.name }`)
-         console.log (`receiving service from ${ server.name }`)
+         Object.assign (info, msg.content)
+         console.log (`welcome ${ info.id.name }, to ${ info.server.name }`)
 
          socket.send (JSON.stringify ({
             method: `pong`,
