@@ -153,8 +153,9 @@ export class ServerNode {
                      console.log (`socket.server is ${ socket.server }`)
                      console.log (`socket.control is ${ socket.control }`)
                      console.log (`socket.id is ${ socket.id }`)
-                     console.log (socket)
-                     
+                     console.dir (socket.id)
+                     console.dir (socket)
+
                      Object.assign (this.control.id, socket.id)
                      this.control.exists = true
                      this.channel.postMessage (JSON.stringify ({
