@@ -119,7 +119,7 @@ export class ServerNode {
                no   : generate (),
                name : generate_nickname (`synth`),
             }
-   
+            console.log (`${ this.id.name } is opening a socket with ${ socket.id.name }`)
             this.sockets.set (this.id.no, socket)
             socket.send (JSON.stringify ({
                method  : `id`,
@@ -135,6 +135,7 @@ export class ServerNode {
             const manage_incoming = {
                request_control: () => {
                   if (!this.control.exists) {
+                     console.log (`request_control called in ${ this.id.name }`)   
                      console.log (socket)
                      Object.assign (this.control.id, socket.id)
                      this.control.exists = true
