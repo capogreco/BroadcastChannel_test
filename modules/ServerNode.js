@@ -110,16 +110,25 @@ export class ServerNode {
          socket.onopen = () => {
             socket.audio_enabled = false
             console.log (`socket.audio_enabled is ${ socket.audio_enabled }`)
+
             socket.control       = { 
                exists : false,
                id     : {   },
             }
+            console.log (`socket.control is ${ socket.control }`)
+
             socket.ping          = Date.now ()
+            console.log (`socket.ping is ${ socket.ping }`)
+
             socket.server        = this.id
+            console.log (`socket.server is ${ socket.server }`)
+
             socket.id            = {
                no   : generate (),
                name : generate_nickname (`synth`),
             }
+            console.log (`socket.id is ${ socket.id }`)
+            
             console.log (`${ this.id.name } is opening a socket with ${ socket.id.name }`)
             console.dir (socket)
             this.sockets.set (this.id.no, socket)
