@@ -147,10 +147,11 @@ export class ServerNode {
                },
 
                pong: () => {
-                  socket.ping -= Date.now ()
+                  socket.ping = Date.now () - socket.ping
                   socket.ping /= 2
                   socket.ping = Math.floor (socket.ping)
                   console.log (`${ socket.id.name }'s ping is ${ socket.ping }ms`)
+                  this.update_control ()
                },
 
                ready: () => {
