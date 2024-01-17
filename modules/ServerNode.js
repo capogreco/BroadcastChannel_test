@@ -120,6 +120,7 @@ export class ServerNode {
                name : generate_nickname (`synth`),
             }
             console.log (`${ this.id.name } is opening a socket with ${ socket.id.name }`)
+            console.dir (socket)
             this.sockets.set (this.id.no, socket)
             socket.send (JSON.stringify ({
                method  : `id`,
