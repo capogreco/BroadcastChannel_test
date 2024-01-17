@@ -135,6 +135,7 @@ export class ServerNode {
             const manage_incoming = {
                request_control: () => {
                   if (!this.control.exists) {
+                     console.log (socket)
                      Object.assign (this.control.id, socket.id)
                      this.control.exists = true
                      this.channel.postMessage (JSON.stringify ({
