@@ -109,6 +109,10 @@ export class ServerNode {
 
          socket.onopen = () => {
             socket.audio_enabled = false
+            socket.control       = { 
+               exists : false,
+               id     : {   },
+            }
             socket.ping          = Date.now ()
             socket.server        = this.id
             socket.id            = {
@@ -130,17 +134,15 @@ export class ServerNode {
             const msg = JSON.parse (m.data, reviver)
             const manage_incoming = {
                request_control: () => {
-                  if (!this.control) {
-                     this.control = socket
-                     this.sockets.delete (socket.id.no)
-                     this.update_control ()
+                  if (!this.control.exists) {
+                     Object.assign (this.control.id, socket.id)
+                     this.control.exists = true
                      this.channel.postMessage (JSON.stringify ({
                         type   : `efferent`,
                         method : `request_info`,
                      }))
-                     let self_copy = JSON.stringify(this, replacer)
-                     self_copy = JSON.parse (self_copy, reviver)
-                     this.servers.set (this.id.no, self_copy)
+                     this.update_servers ()
+                     this.update_control ()
                      console.log (`${ this.control.id.name } has control.`)
                   }
                   else console.log (`${ id } wants control!`)
@@ -191,13 +193,19 @@ export class ServerNode {
    }   
 
    update_control () {
-      if (this.control) {
+      if (this.control.exists) {
          this.control.send (JSON.stringify ({
             method  : `list`,
             content : this.servers
          }, replacer))
       }
       else this.send_info ()
+   }
+
+   update_servers () {
+      console.log (`${ this.id.name } is updating servers`)
+      this.servers.set (this.id.no, { ...this })
+      console.dir (this.servers)
    }
 
 }
