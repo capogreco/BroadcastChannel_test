@@ -1,5 +1,6 @@
 import { serveDir } from "https://deno.land/std@0.185.0/http/file_server.ts"
 import { generate } from "https://deno.land/std@0.185.0/uuid/v1.ts"
+import { OverSock } from "./OverSock.js"
 import { generate_nickname } from "./nickname.js"
 import { replacer, reviver } from "./replacer.js"
 
@@ -39,7 +40,7 @@ export class ServerNode {
    }
 
    manage_afferent (msg) {
-      if (!this.control) return
+      if (!this.control.id.no) return
       const manage_method = {
          check_in : this.manage_check_in.bind (this),
          info     : this.manage_info.bind (this),
@@ -69,7 +70,10 @@ export class ServerNode {
       const msg = {
          type    : `afferent`,
          method  : `info`,
-         content : this,      
+         content : {
+            id: this.id,
+            sockets: this.sockets,
+         },      
       }
       this.channel.postMessage (JSON.stringify (msg, replacer))
    }
@@ -83,8 +87,8 @@ export class ServerNode {
 
    check_sockets () {
       const removals = []
-      this.sockets.forEach ((s, id) => {
-         if (s.readyState > 1) {
+      this.sockets.forEach ((sock, id) => {
+         if (sock.et.readyState > 1) {
             removals.push (id)
          }
       })
@@ -98,6 +102,11 @@ export class ServerNode {
 
    async req_handler (incoming_req) {
       let req = incoming_req
+      let id = {
+         no   : false,
+         name : false
+      }
+      let sock
 
       const path = new URL (req.url).pathname
       const upgrade = req.headers.get ("upgrade") || ""
@@ -105,75 +114,50 @@ export class ServerNode {
       if (upgrade.toLowerCase () == "websocket") {
          
          const { socket, response } = Deno.upgradeWebSocket (req)
-         console.log (`socket is ${ socket }`)
 
          socket.onopen = () => {
-            socket.audio_enabled = false
-            console.log (`socket.audio_enabled is ${ socket.audio_enabled }`)
+            id.no   = req.headers.get (`sec-websocket-key`)
+            id.name = generate_nickname (`synth`)
+            sock    = new OverSock (socket, id, this.id.no)
 
-            socket.control       = { 
-               exists : false,
-               id     : {   },
-            }
-            console.log (`socket.control is ${ socket.control }`)
+            this.sockets.set (sock.id.no, sock)
 
-            socket.ping          = Date.now ()
-            console.log (`socket.ping is ${ socket.ping }`)
-
-            socket.server        = this.id
-            console.log (`socket.server is ${ socket.server }`)
-
-            socket.id            = {
-               no   : generate (),
-               name : generate_nickname (`synth`),
-            }
-            console.log (`socket.id is ${ socket.id }`)
-
-            console.log (`${ this.id.name } is opening a socket with ${ socket.id.name }`)
-            console.dir (socket)
-            this.sockets.set (this.id.no, socket)
-            socket.send (JSON.stringify ({
+            sock.et.send (JSON.stringify ({
                method  : `id`,
-               content :  socket,
+               content :  { 
+                  id: sock.id,
+                  server: this.id
+               },
             }), replacer)
             this.update_control ()
 
-            console.log (`${ socket.id.name } has joined ${ this.id.name }!`)
+            console.log (`${ sock.id.name } has joined ${ this.id.name }!`)
          }
 
          socket.onmessage = m => {   
             const msg = JSON.parse (m.data, reviver)
             const manage_incoming = {
                request_control: () => {
-                  if (!this.control.exists) {
-
-                     console.log (`request_control called in ${ this.id.name }`)   
-                     console.log (`socket.audio_enabled is ${ socket.audio_enabled }`)
-                     console.log (`socket.ping is ${ socket.ping }`)
-                     console.log (`socket.server is ${ socket.server }`)
-                     console.log (`socket.control is ${ socket.control }`)
-                     console.log (`socket.id is ${ socket.id }`)
-                     console.dir (socket.id)
-                     console.dir (socket)
-
-                     Object.assign (this.control.id, socket.id)
-                     this.control.exists = true
+                  if (!this.control) {
+                     // console.dir (msg)
+                     this.control = this.sockets.get (msg.content.no)
                      this.channel.postMessage (JSON.stringify ({
                         type   : `efferent`,
                         method : `request_info`,
                      }))
-                     this.update_servers ()
+                     // this.update_servers ()
                      this.update_control ()
+                     // console.dir (this.control)
                      console.log (`${ this.control.id.name } has control.`)
                   }
                   else console.log (`${ id } wants control!`)
                },
 
                pong: () => {
-                  socket.ping = Date.now () - socket.ping
-                  socket.ping /= 2
-                  socket.ping = Math.floor (socket.ping)
-                  console.log (`${ socket.id.name }'s ping is ${ socket.ping }ms`)
+                  sock.ping = Date.now () - sock.ping
+                  sock.ping /= 2
+                  sock.ping = Math.floor (sock.ping)
+                  console.log (`${ id.name }'s ping is ${ sock.ping }ms`)
                   this.update_control ()
                },
 
@@ -182,21 +166,20 @@ export class ServerNode {
                   this.update_control ()
                },   
             }
-            console.log (msg.method)
             manage_incoming[msg.method] ()
          }
    
          socket.onerror = e => console.log(`socket error: ${ e.message }`)
          socket.onclose = () => {
             if (this.control) {
-               console.dir (this.control)
-               if (this.control.id.no == socket.id.no) {
+               // console.dir (this.control)
+               if (this.control.id.no == id) {
                   this.control = false
                }
             }
    
             else {
-               this.sockets.delete (socket.id.no)
+               this.sockets.delete (id)
                this.update_control ()
             }
          }
@@ -214,20 +197,28 @@ export class ServerNode {
    }   
 
    update_control () {
-      if (this.control.exists) {
-         this.control.send (JSON.stringify ({
+      if (this.control) {
+         if (this.control.et.readyState > 1) {
+            this.control = false
+            this.update_control ()
+            return
+         }
+         this.control.et.send (JSON.stringify ({
             method  : `list`,
-            content : this.servers
+            content : {
+               id      : this.id,
+               sockets : this.sockets,
+               servers : this.servers,
+            }
          }, replacer))
       }
       else this.send_info ()
    }
 
-   update_servers () {
-      console.log (`${ this.id.name } is updating servers`)
-      this.servers.set (this.id.no, { ...this })
-      console.dir (this.servers)
-   }
+   // update_servers () {
+   //    console.log (`${ this.id.name } is updating servers`)
+   //    console.dir (this.servers)
+   // }
 
 }
 

@@ -12,8 +12,8 @@ function wait_for_clear () {
 }
 
 
-const ws_address = `wss://polite-gecko-95.deno.dev`
-// const ws_address = `ws://localhost/`
+// const ws_address = `wss://polite-gecko-95.deno.dev`
+const ws_address = `ws://localhost/`
 
 const socket = new WebSocket (ws_address)
 
@@ -23,6 +23,7 @@ socket.onmessage = m => {
    const handle_incoming = {
       id: () => {
          Object.assign (info, msg.content)
+         console.dir (info)
          console.log (`welcome, ${ info.id.name }, to ${ info.server.name }`)
 
          socket.send (JSON.stringify ({
@@ -36,8 +37,27 @@ socket.onmessage = m => {
          console.dir (msg)
 
          socket_list.textContent = ``
-      
-         msg.content.forEach (serv => {
+
+         const control_serv_div = document.createElement (`div`)
+         control_serv_div.innerText = msg.content.id.name
+         control_serv_div.style.width      = `100%`
+         control_serv_div.style.marginLeft = `0%`
+         control_serv_div.style.userSelect = `none`
+         control_serv_div.style.color = `grey`
+         socket_list.appendChild (control_serv_div)
+
+         msg.content.sockets.forEach (sock => {
+            const sock_div = document.createElement (`div`)
+            sock_div.innerText = sock.id.name
+            sock_div.style.width      = `92%`
+            sock_div.style.marginLeft = `8%`
+            sock_div.style.userSelect = `none`
+            sock_div.style.color = `grey`
+            socket_list.appendChild (sock_div)   
+         })
+
+
+         msg.content.servers.forEach (serv => {
             const serv_div = document.createElement (`div`)
             serv_div.innerText = serv.id.name
             serv_div.style.width      = `100%`
@@ -122,14 +142,14 @@ document.body.onpointerdown = e => {
 
    pointer_down = true
 
-   socket.send (JSON.stringify ({
-      method: `upstate`,
-      content: {
-         x: e.x / cnv.width,
-         y: e.y / cnv.height,
-         is_playing: true,
-      }
-   }))
+   // socket.send (JSON.stringify ({
+   //    method: `upstate`,
+   //    content: {
+   //       x: e.x / cnv.width,
+   //       y: e.y / cnv.height,
+   //       is_playing: true,
+   //    }
+   // }))
 
    background ()
    draw_square (e)
@@ -148,14 +168,14 @@ document.body.onpointermove = e => {
       draw_square (pos)
 
       if (all_clear) {
-         socket.send (JSON.stringify ({
-            method: `upstate`,
-            content: {
-               x: pos.x / cnv.width,
-               y: pos.y / cnv.height,
-               is_playing: true,
-            }
-         }))
+         // socket.send (JSON.stringify ({
+         //    method: `upstate`,
+         //    content: {
+         //       x: pos.x / cnv.width,
+         //       y: pos.y / cnv.height,
+         //       is_playing: true,
+         //    }
+         // }))
          wait_for_clear ()
       }
    }
@@ -172,12 +192,12 @@ document.body.onpointerup = e => {
 
    background ()
 
-   socket.send (JSON.stringify ({
-      method: `upstate`,
-      content: {
-         is_playing: false,
-      }
-   }))
+   // socket.send (JSON.stringify ({
+   //    method: `upstate`,
+   //    content: {
+   //       is_playing: false,
+   //    }
+   // }))
 }
 
 
